@@ -18,7 +18,7 @@ const form = useForm({
     price: 0,
 });
 
-defineProps<{}>();
+defineProps({});
 </script>
 
 

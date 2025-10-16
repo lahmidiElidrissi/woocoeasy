@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { products } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
 import DataTable from 'datatables.net-vue3'
@@ -20,7 +19,7 @@ const columns = [
         data: 'id',
         orderable: false,
         searchable: false,
-        render: function (data: any, type: string, row: any) {
+        render: function (data: any) {
             return `<input type="checkbox" 
                 class="dark:border-slate-400/20 dark:scale-100 transition-all duration-500 ease-in-out dark:hover:scale-110 
                 dark:checked:scale-100 w-4 h-4 bg-gray-100" value="${data}" />`;
@@ -44,7 +43,7 @@ const options = {
     ]
 };
 
-defineProps<{}>();
+defineProps({});
 
 DataTable.use(DataTablesCore)
 </script>
