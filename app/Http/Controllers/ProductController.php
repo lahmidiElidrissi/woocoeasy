@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\ProductService;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Yajra\DataTables\Facades\DataTables;
-use WooCommerce;
-
 class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request, ProductService $productService)
     {
+        if ($request->has('datatable')) {
+          return  $productService->getDataTableProdcuts($request);
+        }
+
         return Inertia::render('Products/index');
         
     }
@@ -63,21 +66,5 @@ class ProductController extends Controller
     public function destroy()
     {
         //
-    }
-
-    public function dataTable()
-    {
-        $products = WooCommerce::get('products');
-        $collection = collect($products);
-        return DataTables::of($collection)
-            ->addIndexColumn()
-            ->editColumn('name', fn($product) => $product->name)
-            ->editColumn('price', fn($product) => $product->price)
-            ->editColumn('stock_status', fn($product) => $product->stock_status)
-            ->addColumn('action', function ($product) {
-                return '<button class="btn btn-sm btn-primary" data-id="'.$product->id.'">Edit</button>';
-            })
-            ->rawColumns(['action'])
-            ->make(true);
     }
 }

@@ -27,13 +27,14 @@ const columns = [
     },
     { data: 'name', title: 'Name' },
     { data: 'price', title: 'Price' },
+    { data: 'action', title: 'Action' },
 ];
 
 const options = {
     responsive: true,
     serverSide: true,
     processing: true,
-    ajax: '/datatables/products',
+    ajax: '/products?datatable=true',
     columnDefs: [
         {
             targets: 0,
@@ -71,6 +72,7 @@ DataTable.use(DataTablesCore)
                         </th>
                         <th>Name</th>
                         <th>Price</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
             </DataTable>

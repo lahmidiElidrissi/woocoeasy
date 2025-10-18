@@ -17,7 +17,6 @@ Route::get('/test', function () {
 });
 
 Route::resource('products', ProductController::class)->middleware(['auth', 'verified']);
-Route::get('/datatables/products', [ProductController::class, 'dataTable'])->middleware(['auth', 'verified'])->name('products.data');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
