@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\ProductDataTable;
+use App\Jobs\UploadProductImagesToWooCommerce;
 use App\Services\ProductService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use WooCommerce;
+
 class ProductController extends Controller
 {
     /**
@@ -31,9 +35,43 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store()
+    public function store(Request $request)
     {
-        return Inertia::render('Products/index');
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'price' => 'required|numeric|min:0',
+            'images' => 'nullable|array',
+            'images.0' => 'mimes:jpg,jpeg,png,webp,gif,svg,bmp,ico,tiff,tga,heic,heif,jxl,avif,apng,tiff,tga',
+        ]);
+
+        $productData = [
+            'name' => $validated['name'],
+            'type' => 'simple',
+            'regular_price' => (string)$validated['price'],
+            'description' => $validated['description'],
+        ];
+
+        $product = WooCommerce::post('products', $productData);
+
+        if ($request->hasFile('images')) {
+            $imagePaths = [];
+            foreach ($request->file('images') as $index => $image) {
+                $path = $image->store('temp/products', 'local');
+                $imagePaths[] = [
+                    'path' => $path,
+                    'original_name' => $image->getClientOriginalName(),
+                    'mime_type' => $image->getMimeType()
+                ];
+            }
+            UploadProductImagesToWooCommerce::dispatch($product->id, $imagePaths);
+        }
+        
+        ProductDataTable::clearTotalCache();
+        
+        return Inertia::render('Products/index' , [
+            'message' => [ 'text' => 'Product created successfully' , 'type' => 'success' ],
+        ]);
     }
 
     /**
