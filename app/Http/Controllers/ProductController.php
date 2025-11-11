@@ -85,9 +85,18 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit()
+    public function edit($id)
     {
-        //
+        $product = WooCommerce::get('products/' . $id);
+        return Inertia::render('Products/update', [
+            'product' => [
+                'id' => $product->id,
+                'name' => $product->name,
+                'description' => $product->description,
+                'price' => $product->price ?? $product->regular_price,
+                'images' => $product->images ?? [],
+            ],
+        ]);
     }
 
     /**

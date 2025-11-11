@@ -27,7 +27,7 @@ class ProductDataTable extends DataTablesTable
             ->editColumn('name', fn($product) => $product['name'])
             ->editColumn('price', fn($product) => $product['price'])
             ->addColumn('action', fn($product) =>
-                '<button class="bg-green-800 px-4 py-1 rounded-[4px] text-white dark:text-black " data-id="'.$product['id'].'">Edit</button>'
+                '<a href="/products/' . $product['id'] . '/edit" class="bg-green-800 px-4 py-1 rounded-[4px] text-white dark:text-black">Edit</a>'
             )
             ->skipPaging()
             ->setFilteredRecords($this->getTotal())
